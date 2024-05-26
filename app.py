@@ -37,8 +37,26 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     userid = event.source.user_id
-    groupid = event.source.group_id
-    
+    if event.source.type == 'group':
+        groupid = event.source.group_id
+    else:
+        groupid = 'not group'
+
+    try :
+        line_bot_api.push_message(
+            'Cf85cafe0ea65ceefd8d492765e0d7781',
+            TextSendMessage(text=event.message.text)
+        )
+    except:
+        print('push message to group failed')
+
+    try:
+        line_bot_api.push_message(
+            'U538edbf7c8239ac817f6bff0e23d7227',
+            TextSendMessage(text=event.message.text)
+        )
+    except:
+        print('push message to user failed')
 
     line_bot_api.reply_message(
         event.reply_token, 
