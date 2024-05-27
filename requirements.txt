@@ -2,3 +2,5 @@ gunicorn==19.7.1
 line-bot-sdk
 flask
 future
+gspread
+oauth2client
