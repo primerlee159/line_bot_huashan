@@ -1,4 +1,5 @@
 import gspread
+import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 
 sheet = -1
@@ -112,8 +113,10 @@ def add_works(name,loc,date,time):
             err_messages.append(add_work(name,loc,date,t))
     return err_messages
 
-def EditGoogleSheet(new_comment,sheet_name):
+def EditGoogleSheet(new_comment):
     global sheet
+    month = datetime.date.today().month
+    sheet_name = f'{month}月'
     decode_comment = new_comment.split(' ')
     remark = None
     
@@ -126,11 +129,11 @@ def EditGoogleSheet(new_comment,sheet_name):
     
 
     err_messages = []
-    check_month = date.split('/')[0]
+    check_month = int(date.split('/')[0])
 
     if work == -1:
         err_messages.append('Error : 格式錯誤，請重新確認格式，謝謝!')
-    elif sheet_name[:-1] is not check_month:
+    elif month != check_month:
         err_messages.append('Error : 月份錯誤，請重新確認增減班日期，謝謝!')
     elif loc != '華山' and loc != '龍山':
         err_messages.append('Error : 地點錯誤，分隊只能填華山或龍山，謝謝!')  
@@ -142,22 +145,32 @@ def EditGoogleSheet(new_comment,sheet_name):
             err_messages = del_works(name,loc,date,time)
         else:
             err_messages.append('Error : 請輸入確認格式，第一格只能填寫增班或請假，謝謝!')
+
+    if sheet != -1:
+        set_remark_row = len(sheet.get_all_values())
+    else:
+        set_remark_row = 0
+
+    if set_remark_row < 40:
+        set_remark_row = 40
+    else:
+        set_remark_row += 1
     
-    sheet_remark = open_sheet(sheet_name = f'{sheet_name}備註')
-    
+    push_cell = 0
     for message in err_messages:
         if not 'Error' in message:
-            if remark is None:
-                sheet_remark.append_row([message])
-            else:
-                sheet_remark.append_row([message,remark])
+            sheet.update_cell(set_remark_row+push_cell,3,f'{name} {loc}{message}')
+            if remark is not None:
+                sheet.update_cell(set_remark_row+push_cell,4,remark)
+            push_cell += 1
+                
 
 
     return err_messages
 
 if __name__ == '__main__':
     
-    for i in EditGoogleSheet('請假 李相承 龍山 5/31 早午','5月'):
+    for i in EditGoogleSheet('增班 李相承 華山 5/30 早午晚 10-18'):
         print(i)
     
 
