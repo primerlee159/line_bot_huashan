@@ -6,6 +6,7 @@ class LinkGoogleSheet():
     def __init__(self):
         self.sheet = -1
         self.month = datetime.date.today().month
+        self.auth_json_path = 'pro-variety-424600-m6-ff590f99699c.json'
         self.sheet_name = f'{self.month}月'
         self.name = ''
         self.loc = ''
@@ -14,9 +15,8 @@ class LinkGoogleSheet():
         
 
     def open_sheet(self):
-        auth_json_path = 'pro-variety-424600-m6-ff590f99699c.json'
         gss_scopes = ['https://spreadsheets.google.com/feeds']
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(auth_json_path,gss_scopes)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(self.auth_json_path,gss_scopes)
         gss_client = gspread.authorize(credentials)
 
         spreadsheet_key = '1KioGawgpql5GGBQj6_Q62Bbw73HNW1LHw4ojGMqtcuw'
