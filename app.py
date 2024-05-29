@@ -49,7 +49,7 @@ def handle_message(event):
         groupid = 'not group'
 
     example_saveid = LinkGoogleSheet()
-    example_saveid.auth_json_path = 'EditGoogleSheet/pro-variety-424600-m6-ff590f99699c.json'
+    example_saveid.auth_json_path = 'EditGoogleSite/pro-variety-424600-m6-ff590f99699c.json'
     example_saveid.sheet_name = 'Line User ID'
     example_saveid.SaveUserID([event.message.text,userid,groupid])
 
