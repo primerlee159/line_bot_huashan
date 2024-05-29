@@ -9,7 +9,13 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
+
 import os
+import sys
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(BASE_DIR)
+from EditGoogleSite.LinkGoogleSheet import *
+
 
 app = Flask(__name__)
 
@@ -42,25 +48,13 @@ def handle_message(event):
     else:
         groupid = 'not group'
 
-    try :
-        line_bot_api.push_message(
-            'Cf85cafe0ea65ceefd8d492765e0d7781',
-            TextSendMessage(text=event.message.text)
-        )
-    except:
-        print('push message to group failed')
-
-    try:
-        line_bot_api.push_message(
-            'U538edbf7c8239ac817f6bff0e23d7227',
-            TextSendMessage(text=event.message.text)
-        )
-    except:
-        print('push message to user failed')
+    example_saveid = LinkGoogleSheet()
+    example_saveid.sheet_name = 'Line User ID'
+    example_saveid.SaveUserID([event.message.text,userid,groupid])
 
     line_bot_api.reply_message(
         event.reply_token, 
-        TextSendMessage(text=f"user id : {userid}\ngroup id : {groupid}")
+        TextSendMessage(text=f"{event.message.text} 收到 謝謝!")
         )
 
 
